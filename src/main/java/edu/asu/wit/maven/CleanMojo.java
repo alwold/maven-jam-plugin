@@ -25,7 +25,7 @@ public class CleanMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(appDir);
-        scanner.setExcludes(new String[]{"build.xml", "WEB-INF/build.xml", "asuthemes/**"});
+        scanner.setExcludes(new String[]{"build.xml", "WEB-INF/build.xml", "asuthemes/**", "WEB-INF"});
         scanner.scan();
         String[] filesToDelete = scanner.getIncludedFiles();
         getLog().info("Deleting "+filesToDelete.length+" files...");
