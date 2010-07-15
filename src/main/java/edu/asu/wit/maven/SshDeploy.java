@@ -7,7 +7,10 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
@@ -17,6 +20,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
  * @goal sshdeploy
+ * @execute phase="install"
  * @author alwold
  */
 public class SshDeploy extends AbstractMojo {
@@ -51,12 +55,14 @@ public class SshDeploy extends AbstractMojo {
      */
     private List compileSourceRoots;
 
-	private String sshUsername = "";
-	private String sshPassword = "";
-
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		JSch jsch = new JSch();
 		try {
+			getLog().info("Please enter your username:");
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			final String sshUsername = br.readLine();
+			getLog().info("Please enter your password:");
+			final String sshPassword = br.readLine();
+			JSch jsch = new JSch();
 			Session session = jsch.getSession(sshUsername, sshHost, 22);
 			session.setUserInfo(new UserInfo() {
 
@@ -92,8 +98,7 @@ public class SshDeploy extends AbstractMojo {
 			File webappBase = new File(outputDirectory, warName);
 			scanner.setBasedir(webappBase);
 			// exclude jetty-env.xml because it might include passwords and it isn't needed
-			// TODO is this working on WEB-INF/classes?
-			scanner.setExcludes(new String[] { "WEB-INF/classes", "WEB-INF/jetty-env.xml", "WEB-INF" });
+			scanner.setExcludes(new String[] { "WEB-INF/classes/**", "WEB-INF/jetty-env.xml", "WEB-INF" });
 			scanner.scan();
 			String[] files = scanner.getIncludedFiles();
 			boolean foundDevAppProperties = false;
@@ -105,8 +110,12 @@ public class SshDeploy extends AbstractMojo {
 				File destinationFile = new File(destination);
 
 				try {
-					SftpATTRS attrs = sftp.stat(destinationFile.getParent());
-					if (!attrs.isDir()) {
+					SftpATTRS attrs = null;
+					try {
+						attrs = sftp.stat(destinationFile.getParent());
+					} catch (SftpException e) {}
+					if (attrs == null) {
+						getLog().info("creating "+destinationFile.getParent());
 						sftp.mkdir(destinationFile.getParent());
 					}
 
@@ -142,8 +151,12 @@ public class SshDeploy extends AbstractMojo {
 				File destinationFile = new File(destination);
 
 				try {
-					SftpATTRS attrs = sftp.stat(destinationFile.getParent());
-					if (!attrs.isDir()) {
+					SftpATTRS attrs = null;
+					try {
+						attrs = sftp.stat(destinationFile.getParent());
+					} catch (SftpException e) {}
+					if (attrs == null) {
+						getLog().info("creating "+destinationFile.getParent());
 						sftp.mkdir(destinationFile.getParent());
 					}
 
@@ -168,11 +181,15 @@ public class SshDeploy extends AbstractMojo {
 					File source = new File(root, name);
 					File destinationFile = new File(destination);
 
-					if (!destinationFile.getParentFile().exists()) {
-						destinationFile.getParentFile().mkdirs();
-					}
-
 					try {
+						SftpATTRS attrs = null;
+						try {
+							attrs = sftp.stat(destinationFile.getParent());
+						} catch (SftpException e) {}
+						if (attrs == null) {
+							sftp.mkdir(destinationFile.getParent());
+						}
+
 						getLog().info("copying "+source.getAbsolutePath()+" ->");
 						getLog().info(destinationFile.getAbsolutePath());
 						sftp.put(source.getAbsolutePath(), destination);
@@ -183,6 +200,8 @@ public class SshDeploy extends AbstractMojo {
 			}
 		} catch (JSchException e) {
 			throw new MojoExecutionException("Unable to start SSH session", e);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Unable to read credentials", e);
 		}
 	}
 
