@@ -1,0 +1,4 @@
+- Add password management (so you don't have to type it every time)
+- Add progress meters on file uploads
+- More testing with nonstandard layouts (e.g. ASU Directory project)
+- Add short command to do jam:clean jam:deploy jam:compile jam:restart jam:migrate jam:compileqa jam:restartqa
