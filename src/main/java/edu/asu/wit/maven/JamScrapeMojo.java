@@ -1,6 +1,3 @@
-/*
- */
-
 package edu.asu.wit.maven;
 
 import java.io.BufferedReader;
@@ -14,7 +11,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.settings.MavenSettingsBuilder;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
 import org.apache.xpath.XPathAPI;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -25,6 +26,9 @@ import org.xml.sax.SAXException;
  * @author alwold
  */
 public abstract class JamScrapeMojo extends AbstractMojo {
+	/** @component */
+	private MavenSettingsBuilder settingsBuilder;
+	
 	private String BASE_ACTION_URL = "https://webapp4.asu.edu/jam/";
 	private static String authenticator;
 	
@@ -37,12 +41,21 @@ public abstract class JamScrapeMojo extends AbstractMojo {
 		try {
 			client.executeMethod(post);
 			if (post.getResponseHeader("Location") != null && post.getResponseHeader("Location").getValue().contains("weblogin")) {
-				// TODO figure out a better way to deal with this
-				getLog().info("Please enter your username:");
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				String username = br.readLine();
-				getLog().info("Please enter your password:");
-				String password = br.readLine();
+				String username;
+				String password;
+				Settings settings = settingsBuilder.buildSettings();
+				if (settings.getServer("jam") == null) {
+					getLog().info("Please enter your username:");
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					username = br.readLine();
+					// TODO can we mask the password input?
+					getLog().info("Please enter your password:");
+					password = br.readLine();
+				} else {
+					Server server = settings.getServer("jam");
+					username = server.getUsername();
+					password = server.getPassword();
+				}
 				PostMethod loginPost = new PostMethod(post.getResponseHeader("Location").getValue());
 				loginPost.addParameter("form", "login");
 				loginPost.addParameter("userid", username);
@@ -84,6 +97,9 @@ public abstract class JamScrapeMojo extends AbstractMojo {
 		} catch (SAXException ex) {
 			ex.printStackTrace();
 			throw new MojoExecutionException("Unable to parse return document", ex);
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+			throw new MojoExecutionException("Unable to load settings", e);
 		}
 	}
 
