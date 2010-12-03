@@ -16,7 +16,6 @@ import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * @goal sshdeploy
- * @execute phase="install"
  * @author alwold
  */
 public class SshDeploy extends AbstractDeployMojo {
