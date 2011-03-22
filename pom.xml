@@ -6,6 +6,10 @@
 	<packaging>maven-plugin</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>maven-jam-plugin</name>
+	<scm>
+		<connection>scm:git:git://github.com/alwold/maven-jam-plugin.git</connection>
+		<url>scm:git://github.com/alwold/maven-jam-plugin.git</url>
+	</scm>
 	<build>
 		<plugins>
 			<plugin>
