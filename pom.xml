@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:pom="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:pom="http://maven.apache.org/POM/4.0.0">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.asu.wit</groupId>
 	<artifactId>maven-jam-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>maven-jam-plugin</name>
 	<scm>
-		<connection>scm:git:ssh://github.com/alwold/maven-jam-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/alwold/maven-jam-plugin.git</developerConnection>
-		<url>http://github.com/alwold/maven-jam-plugin</url>
+		<connection>scm:git:git://github.com/alwold/maven-jam-plugin.git</connection>
+		<url>scm:git://github.com/alwold/maven-jam-plugin.git</url>
 	</scm>
 	<build>
 		<plugins>
