@@ -7,8 +7,9 @@
 	<version>1.0</version>
 	<name>maven-jam-plugin</name>
 	<scm>
-		<connection>scm:git:git@github.com:alwold/maven-jam-plugin.git</connection>
-		<url>scm:git://github.com/alwold/maven-jam-plugin.git</url>
+		<connection>scm:git:ssh://github.com/alwold/maven-jam-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/alwold/maven-jam-plugin.git</developerConnection>
+		<url>http://github.com/alwold/maven-jam-plugin</url>
 	</scm>
 	<build>
 		<plugins>
