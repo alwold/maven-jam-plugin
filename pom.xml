@@ -7,12 +7,17 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>maven-jam-plugin</name>
 	<scm>
-		<connection>scm:git:git://github.com/alwold/maven-jam-plugin.git</connection>
-		<developerConnection>scm:git::git@github.com:alwold/maven-jam-plugin.git</developerConnection>
-		<url>http://github.com/alwold/maven-jam-plugin</url>
+		<connection>scm:git:git@github.com:alwold/maven-jam-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:alwold/maven-jam-plugin.git</developerConnection>
+		<url>scm:git:git@github.com:alwold/maven-jam-plugin.git</url>
 	</scm>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0-beta-9</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
