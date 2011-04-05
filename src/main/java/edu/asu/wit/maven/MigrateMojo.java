@@ -19,5 +19,7 @@ public class MigrateMojo extends JamScrapeMojo {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("env", "dev");
 		performJamAction(appName, "MigrateWarProject", params);
+		params.put("env", "qa");
+		performJamAction(appName, "RsyncWarProject", params);
 	}
 }
