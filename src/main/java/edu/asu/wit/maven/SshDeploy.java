@@ -32,8 +32,10 @@ public class SshDeploy extends AbstractDeployMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			getLog().info("Please enter your username:");
+			getLog().info("Please enter the host you will be using:");
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			sshHost = br.readLine();
+			getLog().info("Please enter your username:");
 			final String sshUsername = br.readLine();
 			getLog().info("Please enter your password:");
 			final String sshPassword = br.readLine();
