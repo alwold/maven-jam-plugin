@@ -76,29 +76,35 @@ public class SshDeploy extends AbstractDeployMojo {
 	}
 
 	@Override
-	public void performCopy(String source, File destinationFile) throws MojoExecutionException {
+	public void performCopy(String source, String destination) throws MojoExecutionException {
 		try {
-			ensureDirectoryExists(destinationFile.getParentFile());
+			if (File.separatorChar == '\\') {
+				// yuck, windows. fix the path with this ghetto hack
+				destination = destination.replaceAll("\\\\", "/");
+			}
+			
+			String parent = destination.substring(0, destination.lastIndexOf("/"));
+			ensureDirectoryExists(parent);
 
 			getLog().info("copying "+source+" ->");
-			getLog().info(destinationFile.getAbsolutePath());
-			sftp.put(source, destinationFile.getAbsolutePath());
+			getLog().info(destination);
+			sftp.put(source, destination);
 		} catch (SftpException e) {
 			throw new MojoExecutionException("Error copying webapp file " + source, e);
 		}
 	}
 
-	private void ensureDirectoryExists(File dir) throws SftpException {
+	private void ensureDirectoryExists(String dir) throws SftpException {
 		SftpATTRS attrs = null;
 		try {
-			attrs = sftp.stat(dir.getAbsolutePath());
+			attrs = sftp.stat(dir);
 		} catch (SftpException e) {}
 		if (attrs == null) {
-			if (dir.getParentFile() != null) {
-				ensureDirectoryExists(dir.getParentFile());
+			if (dir.lastIndexOf("/") != 0) {
+				ensureDirectoryExists(dir.substring(0, dir.lastIndexOf("/")));
 			}
-			getLog().info("creating "+dir.getAbsolutePath());
-			sftp.mkdir(dir.getAbsolutePath());
+			getLog().info("creating "+dir);
+			sftp.mkdir(dir);
 		}
 	}
 
