@@ -11,7 +11,8 @@ import org.codehaus.plexus.util.FileUtils;
  */
 public class DeployMojo extends AbstractDeployMojo {
 	@Override
-	public void performCopy(String source, File destinationFile) throws MojoExecutionException {
+	public void performCopy(String source, String destination) throws MojoExecutionException {
+		File destinationFile = new File(destination);
 		if (!destinationFile.getParentFile().exists()) {
 			destinationFile.getParentFile().mkdirs();
 		}
