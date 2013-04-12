@@ -54,9 +54,8 @@ public abstract class AbstractDeployMojo extends AbstractMojo {
 			String destination = appDir + "/" + name;
 
 			File source = new File(webappBase, name);
-			File destinationFile = new File(destination);
 
-			performCopy(source.getAbsolutePath(), destinationFile);
+			performCopy(source.getAbsolutePath(), destination);
 		}
 		// copy everything from WEB-INF/classes that isn't a class file to WEB-INF/src
 		scanner = new DirectoryScanner();
@@ -82,7 +81,7 @@ public abstract class AbstractDeployMojo extends AbstractMojo {
 			File source = new File(base, name);
 			File destinationFile = new File(destination);
 
-			performCopy(source.getAbsolutePath(), destinationFile);
+			performCopy(source.getAbsolutePath(), destination);
 		}
 		// now get the source code
 		for (Iterator i = compileSourceRoots.iterator(); i.hasNext(); ) {
@@ -99,11 +98,11 @@ public abstract class AbstractDeployMojo extends AbstractMojo {
 				File source = new File(root, name);
 				File destinationFile = new File(destination);
 
-				performCopy(source.getAbsolutePath(), destinationFile);
+				performCopy(source.getAbsolutePath(), destination);
 			}
 		}
 	}
 
-	public abstract void performCopy(String source, File destinationFile) throws MojoExecutionException;
+	public abstract void performCopy(String source, String destination) throws MojoExecutionException;
 
 }
